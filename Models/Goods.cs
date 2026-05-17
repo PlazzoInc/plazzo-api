@@ -9,10 +9,10 @@ public class Goods
     public string Description { get; set; }
     public double Price { get; set; }
     public double Surface { get; set; }
-    public tinyint Rooms { get; set; }
-    public tinyint Bathrooms { get; set; }
-    public tinyint Bedrooms { get; set; }
-    public tinyint Floor { get; set; }
+    public byte Rooms { get; set; }
+    public byte Bathrooms { get; set; }
+    public byte Bedrooms { get; set; }
+    public byte Floor { get; set; }
     public DateTime Construction_Date { get; set; }
     public Char DPE { get; set; }
     public string created_at { get; set; }
