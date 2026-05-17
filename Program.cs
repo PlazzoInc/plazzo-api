@@ -25,6 +25,7 @@ app.UseHttpsRedirection();
 
 app.MapAgencyRoutes();
 app.MapUserRoutes();
+app.MapGoodRoutes();
 
 app.Run();
 
