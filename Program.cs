@@ -23,6 +23,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapAgencyRoutes();
 app.MapUserRoutes();
 
 app.Run();
