@@ -8,8 +8,4 @@ public class PlazzoContext : DbContext
     public DbSet<Agencies> Agencies { get; set; }
     public DbSet<Users> Users { get; set; }
     public DbSet<Goods> Goods { get; set; }
-
-    // Supprime ou commente OnConfiguring — la config vient maintenant de Program.cs
-    // protected override void OnConfiguring(DbContextOptionsBuilder options)
-    //     => options.UseNpgsql("...");
 }
