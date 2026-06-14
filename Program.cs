@@ -40,6 +40,14 @@ builder.Services.AddScoped<IPropertyPhotoRepository, PropertyPhotoRepository>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<IPropertyPhotoService, PropertyPhotoService>();
 
+builder.Services.AddScoped<IMandateRepository, MandateRepository>();
+builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+builder.Services.AddScoped<IMandateService, MandateService>();
+builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 var jwtSection = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
