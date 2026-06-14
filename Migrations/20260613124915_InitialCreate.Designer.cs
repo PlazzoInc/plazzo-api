@@ -5,26 +5,27 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using plazzo_api.dbContext;
 
 #nullable disable
 
 namespace plazzo_api.Migrations
 {
     [DbContext(typeof(PlazzoContext))]
-    [Migration("20260517141952_Init")]
-    partial class Init
+    [Migration("20260613124915_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Agencies", b =>
+            modelBuilder.Entity("plazzo_api.entity.Agency", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,6 +41,13 @@ namespace plazzo_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -48,11 +56,7 @@ namespace plazzo_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Postal_Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("created_at")
+                    b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -61,7 +65,7 @@ namespace plazzo_api.Migrations
                     b.ToTable("Agencies");
                 });
 
-            modelBuilder.Entity("Goods", b =>
+            modelBuilder.Entity("plazzo_api.entity.Property", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,6 +83,9 @@ namespace plazzo_api.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("Construction_Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<char>("DPE")
@@ -115,10 +122,6 @@ namespace plazzo_api.Migrations
                     b.Property<int>("User_Id")
                         .HasColumnType("integer");
 
-                    b.Property<string>("created_at")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("updated_at")
                         .IsRequired()
                         .HasColumnType("text");
@@ -128,7 +131,7 @@ namespace plazzo_api.Migrations
                     b.ToTable("Goods");
                 });
 
-            modelBuilder.Entity("Users", b =>
+            modelBuilder.Entity("plazzo_api.entity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -136,19 +139,25 @@ namespace plazzo_api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Agence_Id")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int?>("AgencyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -160,21 +169,32 @@ namespace plazzo_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("created_at")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("updated_at")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AgencyId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("plazzo_api.entity.User", b =>
+                {
+                    b.HasOne("plazzo_api.entity.Agency", "Agency")
+                        .WithMany("Users")
+                        .HasForeignKey("AgencyId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Agency");
+                });
+
+            modelBuilder.Entity("plazzo_api.entity.Agency", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

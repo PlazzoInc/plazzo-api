@@ -1,21 +1,49 @@
-namespace plazzo_api.entity;    
-    public class Property : BaseEntity
-    
+namespace plazzo_api.entity;
+public enum PropertyType
     {
-        public int Agency_Id { get; set; }
-        public int User_Id { get; set; }
-        public string Type { get; set; }
-        public string Status { get; set; }
-        public string Deed { get; set; }
-        public string Description { get; set; }
-        public double Price { get; set; }
-        public double Surface { get; set; }
-        public byte Rooms { get; set; }
-        public byte Bathrooms { get; set; }
-        public byte Bedrooms { get; set; }
-        public byte Floor { get; set; }
-        public DateTime Construction_Date { get; set; }
-        public Char DPE { get; set; }
-        public string updated_at { get; set; }
+        Apartment,
+        House,
+        Office,
+        CommercialSpace
+    }
 
+    public enum PropertyStatus
+    {
+        Available,
+        UnderOffer,
+        Sold,
+        Withdrawn
+    }
+
+    public class Property : BaseEntity
+    {
+        public int AgencyId { get; set; }
+        public Agency? Agency { get; set; }
+
+        public int CommercialId { get; set; }
+        public User? Commercial { get; set; }
+
+        public PropertyType Type { get; set; }
+        public PropertyStatus Status { get; set; } = PropertyStatus.Available;
+
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+
+        public decimal Price { get; set; }
+        public decimal SurfaceArea { get; set; }
+
+        public byte RoomCount { get; set; }
+        public byte BedroomCount { get; set; }
+        public byte BathroomCount { get; set; }
+        public byte Floor { get; set; }
+
+        public int ConstructionYear { get; set; }
+
+        public char EnergyRating { get; set; }
+
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        public PropertyAddress? Address { get; set; }
+        public ICollection<PropertyPhoto> Photos { get; set; } = new List<PropertyPhoto>();
+        public ICollection<PropertyFeature> Features { get; set; } = new List<PropertyFeature>();
     }
