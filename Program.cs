@@ -48,6 +48,14 @@ builder.Services.AddScoped<IMandateService, MandateService>();
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
+builder.Services.AddScoped<IPriceHistoryRepository, PriceHistoryRepository>();
+builder.Services.AddScoped<IPropertyStatsRepository, PropertyStatsRepository>();
+builder.Services.AddScoped<IAIPredictionRepository, AIPredictionRepository>();
+
+builder.Services.AddScoped<IPriceHistoryService, PriceHistoryService>();
+builder.Services.AddScoped<IPropertyStatsService, PropertyStatsService>();
+builder.Services.AddScoped<IAIPredictionService, AIPredictionService>();
+
 var jwtSection = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

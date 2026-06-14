@@ -16,6 +16,9 @@ public class PlazzoContext : DbContext
     public DbSet<Mandate> Mandates => Set<Mandate>();
     public DbSet<Offer> Offers => Set<Offer>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<PriceHistory> PriceHistories => Set<PriceHistory>();
+    public DbSet<PropertyStats> PropertyStats => Set<PropertyStats>();
+    public DbSet<AIPrediction> AIPredictions => Set<AIPrediction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -190,5 +193,40 @@ public class PlazzoContext : DbContext
             .WithMany()
             .HasForeignKey(t => t.BuyerId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PriceHistory>()
+            .Property(p => p.AveragePricePerM2)
+            .HasPrecision(8, 2);
+
+        modelBuilder.Entity<PriceHistory>()
+            .HasIndex(p => new { p.City, p.PostalCode, p.Period });
+
+        modelBuilder.Entity<PropertyStats>()
+            .HasOne(s => s.Property)
+            .WithOne()
+            .HasForeignKey<PropertyStats>(s => s.PropertyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PropertyStats>()
+            .HasIndex(s => s.PropertyId)
+            .IsUnique();
+
+        modelBuilder.Entity<AIPrediction>()
+            .Property(p => p.Type)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<AIPrediction>()
+            .Property(p => p.Value)
+            .HasPrecision(12, 4);
+
+        modelBuilder.Entity<AIPrediction>()
+            .Property(p => p.Confidence)
+            .HasPrecision(4, 3);
+
+        modelBuilder.Entity<AIPrediction>()
+            .HasOne(p => p.Property)
+            .WithMany()
+            .HasForeignKey(p => p.PropertyId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
