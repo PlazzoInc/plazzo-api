@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using plazzo_api.dbContext;
@@ -11,9 +12,11 @@ using plazzo_api.dbContext;
 namespace plazzo_api.Migrations
 {
     [DbContext(typeof(PlazzoContext))]
-    partial class PlazzoContextModelSnapshot : ModelSnapshot
+    [Migration("20260613223300_AddPropertiesDomain")]
+    partial class AddPropertiesDomain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,96 +63,6 @@ namespace plazzo_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Agencies");
-                });
-
-            modelBuilder.Entity("plazzo_api.entity.Mandate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CommercialId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("FeePercentage")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("CommercialId");
-
-                    b.HasIndex("PropertyId");
-
-                    b.ToTable("Mandates");
-                });
-
-            modelBuilder.Entity("plazzo_api.entity.Offer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("BuyerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CommercialId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("OfferDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyerId");
-
-                    b.HasIndex("CommercialId");
-
-                    b.HasIndex("PropertyId");
-
-                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("plazzo_api.entity.Property", b =>
@@ -328,58 +241,6 @@ namespace plazzo_api.Migrations
                     b.ToTable("PropertyPhotos");
                 });
 
-            modelBuilder.Entity("plazzo_api.entity.Transaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BuyerId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("CompromiseDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("FinalPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("Notary")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("OfferId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SellerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyerId");
-
-                    b.HasIndex("OfferId");
-
-                    b.HasIndex("PropertyId");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("Transactions");
-                });
-
             modelBuilder.Entity("plazzo_api.entity.User", b =>
                 {
                     b.Property<int>("Id")
@@ -429,60 +290,6 @@ namespace plazzo_api.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("plazzo_api.entity.Mandate", b =>
-                {
-                    b.HasOne("plazzo_api.entity.User", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("plazzo_api.entity.User", "Commercial")
-                        .WithMany()
-                        .HasForeignKey("CommercialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("plazzo_api.entity.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Commercial");
-
-                    b.Navigation("Property");
-                });
-
-            modelBuilder.Entity("plazzo_api.entity.Offer", b =>
-                {
-                    b.HasOne("plazzo_api.entity.User", "Buyer")
-                        .WithMany()
-                        .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("plazzo_api.entity.User", "Commercial")
-                        .WithMany()
-                        .HasForeignKey("CommercialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("plazzo_api.entity.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Buyer");
-
-                    b.Navigation("Commercial");
-
-                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("plazzo_api.entity.Property", b =>
@@ -535,41 +342,6 @@ namespace plazzo_api.Migrations
                         .IsRequired();
 
                     b.Navigation("Property");
-                });
-
-            modelBuilder.Entity("plazzo_api.entity.Transaction", b =>
-                {
-                    b.HasOne("plazzo_api.entity.User", "Buyer")
-                        .WithMany()
-                        .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("plazzo_api.entity.Offer", "Offer")
-                        .WithMany()
-                        .HasForeignKey("OfferId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("plazzo_api.entity.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("plazzo_api.entity.User", "Seller")
-                        .WithMany()
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Buyer");
-
-                    b.Navigation("Offer");
-
-                    b.Navigation("Property");
-
-                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("plazzo_api.entity.User", b =>
