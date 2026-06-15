@@ -13,9 +13,11 @@ public class MandateService : IMandateService
             _repository = repository;
         }
 
-        public async Task<List<MandateResponse>> GetAllAsync()
+        public async Task<List<MandateResponse>> GetAllAsync(int? commercialId = null)
         {
-            var mandates = await _repository.GetAllAsync();
+            var mandates = commercialId.HasValue
+                ? await _repository.GetByCommercialIdAsync(commercialId.Value)
+                : await _repository.GetAllAsync();
             return mandates.Select(ToResponse).ToList();
         }
 

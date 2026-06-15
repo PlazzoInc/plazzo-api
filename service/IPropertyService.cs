@@ -4,7 +4,7 @@ using plazzo_api.dto.response;
 namespace plazzo_api.service;
 public interface IPropertyService
     {
-        Task<List<PropertyResponse>> GetAllAsync();
+        Task<List<PropertyResponse>> GetAllAsync(int? agencyId = null, int? commercialId = null);
         Task<PropertyResponse?> GetByIdAsync(int id);
         Task<PropertyResponse> CreateAsync(CreatePropertyRequest request, int currentUserId, int? currentUserAgencyId, bool isAdmin);
         Task<PropertyResponse?> UpdateAsync(int id, UpdatePropertyRequest request);

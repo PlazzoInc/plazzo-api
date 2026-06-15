@@ -17,6 +17,14 @@ public class MandateRepository : IMandateRepository
             return await _context.Mandates.AsNoTracking().ToListAsync();
         }
 
+        public async Task<List<Mandate>> GetByCommercialIdAsync(int commercialId)
+        {
+            return await _context.Mandates
+                .AsNoTracking()
+                .Where(m => m.CommercialId == commercialId)
+                .ToListAsync();
+        }
+
         public async Task<Mandate?> GetByIdAsync(int id)
         {
             return await _context.Mandates.FindAsync(id);

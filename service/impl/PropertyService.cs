@@ -7,22 +7,55 @@ namespace plazzo_api.service.impl;
 public class PropertyService : IPropertyService
     {
         private readonly IPropertyRepository _repository;
+        private readonly IPropertyStatsRepository _statsRepository;
 
-        public PropertyService(IPropertyRepository repository)
+        public PropertyService(IPropertyRepository repository, IPropertyStatsRepository statsRepository)
         {
             _repository = repository;
+            _statsRepository = statsRepository;
         }
 
-        public async Task<List<PropertyResponse>> GetAllAsync()
+        public async Task<List<PropertyResponse>> GetAllAsync(int? agencyId = null, int? commercialId = null)
         {
-            var properties = await _repository.GetAllAsync();
+            List<Property> properties;
+
+            if (agencyId.HasValue)
+                properties = await _repository.GetByAgencyIdAsync(agencyId.Value);
+            else if (commercialId.HasValue)
+                properties = await _repository.GetByCommercialIdAsync(commercialId.Value);
+            else
+                properties = await _repository.GetAllAsync();
+
             return properties.Select(ToResponse).ToList();
         }
 
         public async Task<PropertyResponse?> GetByIdAsync(int id)
         {
             var property = await _repository.GetByIdAsync(id);
-            return property is null ? null : ToResponse(property);
+            if (property is null) return null;
+
+            try
+            {
+                var stats = await _statsRepository.GetByPropertyIdAsync(id);
+                if (stats is null)
+                {
+                    await _statsRepository.CreateAsync(new PropertyStats
+                    {
+                        PropertyId = id,
+                        ViewCount = 1
+                    });
+                }
+                else
+                {
+                    await _statsRepository.IncrementViewAsync(id);
+                }
+            }
+            catch
+            {
+                // view tracking must not block property retrieval
+            }
+
+            return ToResponse(property);
         }
 
         public async Task<PropertyResponse> CreateAsync(

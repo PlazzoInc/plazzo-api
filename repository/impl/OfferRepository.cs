@@ -17,6 +17,15 @@ public class OfferRepository : IOfferRepository
             return await _context.Offers.AsNoTracking().ToListAsync();
         }
 
+        public async Task<List<Offer>> GetByCommercialPropertyAsync(int commercialId)
+        {
+            return await _context.Offers
+                .AsNoTracking()
+                .Where(o => _context.Properties
+                    .Any(p => p.Id == o.PropertyId && p.CommercialId == commercialId))
+                .ToListAsync();
+        }
+
         public async Task<Offer?> GetByIdAsync(int id)
         {
             return await _context.Offers.FindAsync(id);

@@ -4,6 +4,7 @@ namespace plazzo_api.repository;
 public interface IOfferRepository
     {
         Task<List<Offer>> GetAllAsync();
+        Task<List<Offer>> GetByCommercialPropertyAsync(int commercialId);
         Task<Offer?> GetByIdAsync(int id);
         Task<Offer> CreateAsync(Offer offer);
         Task<Offer?> UpdateAsync(Offer offer);

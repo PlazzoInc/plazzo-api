@@ -4,6 +4,8 @@ namespace plazzo_api.repository;
 public interface IPropertyRepository
     {
         Task<List<Property>> GetAllAsync();
+        Task<List<Property>> GetByAgencyIdAsync(int agencyId);
+        Task<List<Property>> GetByCommercialIdAsync(int commercialId);
         Task<Property?> GetByIdAsync(int id);
         Task<Property> CreateAsync(Property property);
         Task<Property?> UpdateAsync(Property property);

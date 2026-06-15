@@ -23,6 +23,22 @@ public class PropertyRepository : IPropertyRepository
             return await WithIncludes().AsNoTracking().ToListAsync();
         }
 
+        public async Task<List<Property>> GetByAgencyIdAsync(int agencyId)
+        {
+            return await WithIncludes()
+                .AsNoTracking()
+                .Where(p => p.AgencyId == agencyId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Property>> GetByCommercialIdAsync(int commercialId)
+        {
+            return await WithIncludes()
+                .AsNoTracking()
+                .Where(p => p.CommercialId == commercialId)
+                .ToListAsync();
+        }
+
         public async Task<Property?> GetByIdAsync(int id)
         {
             return await WithIncludes().FirstOrDefaultAsync(p => p.Id == id);
