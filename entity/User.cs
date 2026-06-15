@@ -3,7 +3,7 @@ namespace plazzo_api.entity;
     public enum UserRole
         {
             Admin,
-            Comercial,
+            Commercial,
             Client
         }
     public class User : BaseEntity

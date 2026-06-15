@@ -4,7 +4,7 @@ using plazzo_api.dto.response;
 namespace plazzo_api.service;
 public interface ITransactionService
     {
-        Task<List<TransactionResponse>> GetAllAsync();
+        Task<List<TransactionResponse>> GetAllAsync(int? commercialId = null);
         Task<TransactionResponse?> GetByIdAsync(int id);
         Task<TransactionResponse> CreateAsync(CreateTransactionRequest request);
         Task<TransactionResponse?> UpdateAsync(int id, UpdateTransactionRequest request);

@@ -17,6 +17,15 @@ public class TransactionRepository : ITransactionRepository
             return await _context.Transactions.AsNoTracking().ToListAsync();
         }
 
+        public async Task<List<Transaction>> GetByCommercialAsync(int commercialId)
+        {
+            return await _context.Transactions
+                .AsNoTracking()
+                .Where(t => _context.Properties
+                    .Any(p => p.Id == t.PropertyId && p.CommercialId == commercialId))
+                .ToListAsync();
+        }
+
         public async Task<Transaction?> GetByIdAsync(int id)
         {
             return await _context.Transactions.FindAsync(id);

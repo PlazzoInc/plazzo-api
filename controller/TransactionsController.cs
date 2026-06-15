@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using plazzo_api.dto.request.transactions;
@@ -20,6 +22,12 @@ namespace plazzo_api.controller
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (role == "Commercial")
+            {
+                var userId = int.Parse(User.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value);
+                return Ok(await _service.GetAllAsync(commercialId: userId));
+            }
             return Ok(await _service.GetAllAsync());
         }
 

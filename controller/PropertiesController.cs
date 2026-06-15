@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using plazzo_api.dto.request.properties;
@@ -22,6 +23,19 @@ namespace plazzo_api.controller
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            // Public endpoint — no auth required for listing
+            // But if logged in as Commercial, filter by agency
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                if (role == "Commercial")
+                {
+                    var agencyIdClaim = User.FindFirst("agencyId")?.Value;
+                    int? agencyId = string.IsNullOrEmpty(agencyIdClaim) ? null
+                        : int.TryParse(agencyIdClaim, out var aid) ? aid : null;
+                    return Ok(await _service.GetAllAsync(agencyId: agencyId));
+                }
+            }
             return Ok(await _service.GetAllAsync());
         }
 
@@ -57,6 +71,15 @@ namespace plazzo_api.controller
         [Authorize(Roles = "Admin,Commercial")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdatePropertyRequest request)
         {
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (role == "Commercial")
+            {
+                var userId = int.Parse(User.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value);
+                var property = await _service.GetByIdAsync(id);
+                if (property is null) return NotFound();
+                if (property.CommercialId != userId)
+                    return Forbid(); // Commercial can't edit another commercial's property
+            }
             var updated = await _service.UpdateAsync(id, request);
             return updated is null ? NotFound() : Ok(updated);
         }
@@ -65,6 +88,15 @@ namespace plazzo_api.controller
         [Authorize(Roles = "Admin,Commercial")]
         public async Task<IActionResult> Delete(int id)
         {
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (role == "Commercial")
+            {
+                var userId = int.Parse(User.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value);
+                var property = await _service.GetByIdAsync(id);
+                if (property is null) return NotFound();
+                if (property.CommercialId != userId)
+                    return Forbid();
+            }
             var deleted = await _service.DeleteAsync(id);
             return deleted ? NoContent() : NotFound();
         }
